@@ -26,12 +26,13 @@ export const adminJs = new AdminJS({
 
 // export const adminJSRouter =  AdminJSExpress.buildRouter(adminJs);
 export const adminJSRouter =  AdminJSExpress.buildAuthenticatedRouter(
-  adminJs, 
-  authenticationOptions, 
+  adminJs,
+  
+  authenticationOptions,
   null, 
   {
     resave: false,
-    saveUnitialized: true,
+    saveUnitialized: false,
     secret: 'senha-do-cookie'
   }
 );
