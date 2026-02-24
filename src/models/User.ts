@@ -1,11 +1,13 @@
 // src/models/User.ts
-
 import { sequelize } from '../database'
 import { DataTypes, Model, Optional } from 'sequelize'
-
 import bcrypt from 'bcrypt';
 
-export interface User {
+// 1. Definição do Tipo de Callback
+type CheckPasswordCallback = (err: Error | undefined, isSame: boolean) => void
+
+// 2. Interface das propriedades do Usuário
+interface UserAttributes {
   id: number
   firstName: string
   lastName: string
@@ -16,13 +18,39 @@ export interface User {
   role: 'admin' | 'user'
 }
 
-export interface UserCreationAttributes
-  extends Optional<User, 'id'> {}
+// 3. Atributos opcionais na criação (o ID é gerado pelo banco)
+export interface UserCreationAttributes extends Optional<UserAttributes, 'id'> {}
+export interface UserInstance  extends Model<UserAttributes, UserCreationAttributes>, User { }
+// 4. A Classe que estende o Model e implementa os atributos
+export class User extends Model<UserAttributes, UserCreationAttributes> {
+  public id!: number
+  public firstName!: string
+  public lastName!: string
+  public phone!: string
+  public birth!: Date
+  public email!: string
+  public password!: string
+  public role!: 'admin' | 'user'
 
-export interface UserInstance
-  extends Model<User, UserCreationAttributes>, User {}
+  // Timestamps (opcional, adicione se o sequelize usar)
+  public readonly createdAt!: Date;
+  public readonly updatedAt!: Date;
 
-export const User = sequelize.define<UserInstance, User>('users', {
+  // IMPLEMENTAÇÃO DO MÉTODO DE INSTÂNCIA
+  // Ao definir dentro da classe, o TypeScript reconhece o método automaticamente
+  checkPassword(password: string, callbackfn: CheckPasswordCallback): void {
+    bcrypt.compare(password, this.password, (err, isSame) => {
+      if (err) {
+        callbackfn(err, false)
+      } else {
+        callbackfn(undefined, isSame)
+      }
+    })
+  }
+}
+
+// 5. Inicialização do Modelo
+User.init({
   id: {
     allowNull: false,
     autoIncrement: true,
@@ -61,15 +89,19 @@ export const User = sequelize.define<UserInstance, User>('users', {
     allowNull: false,
     type: DataTypes.STRING,
     validate: {
-        isIn: [['admin', 'user']]
+      isIn: [['admin', 'user']]
     }
   }
 }, {
-    hooks: {
-        beforeSave: async (user) => {
-            if(user.isNewRecord || user.changed('password')){
-                user.password = await bcrypt.hash(user.password.toString(), 10)
-            }
-        }
+  sequelize,
+  modelName: 'User', // Nome do modelo
+  tableName: 'users', // Nome da tabela no banco
+  hooks: {
+    beforeSave: async (user: User) => {
+      if (user.changed('password')) {
+        const salt = await bcrypt.genSalt(10);
+        user.password = await bcrypt.hash(user.password, salt);
+      }
     }
+  }
 })

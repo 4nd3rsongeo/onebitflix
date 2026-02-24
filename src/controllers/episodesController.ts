@@ -1,6 +1,4 @@
 import { Request, Response } from "express";
-import path from "path";
-import fs from 'fs';
 import { episodeService } from "../services/episodeService";
 
 export const episodesController = {

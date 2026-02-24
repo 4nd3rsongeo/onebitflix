@@ -1,6 +1,6 @@
 import { Request, Response } from "express"
 import { courseService } from "../services/courseService"
-import { getPaginationParams } from "../../helpers/getPaginationParams"
+import { getPaginationParams } from "../helpers/getPaginationParams"
 
 // console.log('courseService no controller:', courseService)
 

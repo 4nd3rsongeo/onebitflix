@@ -1,6 +1,6 @@
 import {Request, Response } from "express"
 import { categoryService } from "../services/categoryService"
-import { getPaginationParams } from "../../helpers/getPaginationParams"
+import { getPaginationParams } from "../helpers/getPaginationParams"
 
 export const categoriesController = {
     // GET /categories
