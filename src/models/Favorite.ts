@@ -12,8 +12,8 @@ export interface Favorite {
 //essa instância é interessante por ser uma tabela intermediária, note 
 //as instância dos dois lados como opcionais...
 export interface FavoriteInstance extends Model<Favorite>, Favorite {
-    course?: CourseInstance
-    user?: UserInstance
+    Course?: CourseInstance
+    User?: UserInstance
 }
 
 export const Favorite = sequelize.define<FavoriteInstance, Favorite> ('Favorite', {
