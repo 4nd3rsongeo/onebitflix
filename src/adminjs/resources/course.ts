@@ -13,7 +13,7 @@ export const courseResourceOptions: ResourceOptions = {
   showProperties: ['id', 'name', 'synopsis', 'featured', 'thumbnailUrl', 'categoryId', 'createdAt', 'updatedAt']
 }
 
-// que entre as featuretypes já existem
+// note que entre as featuretypes já existem
 // objetos para aws ou google cloud service
 export const courseResourceFeatures: FeatureType [] = [
   uploadFileFeature({

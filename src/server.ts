@@ -1,5 +1,5 @@
 import express from "express";
-import cors from cors;
+import cors from "cors";
 import { sequelize } from "./database";
 import { adminJs, adminJSRouter } from "./adminjs";
 import { router } from "./routes";
