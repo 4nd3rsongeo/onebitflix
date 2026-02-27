@@ -2,6 +2,7 @@
 import { sequelize } from '../database'
 import { DataTypes, Model, Optional } from 'sequelize'
 import bcrypt from 'bcrypt';
+import { EpisodeInstance } from './Episode';
 
 // 1. Definição do Tipo de Callback
 type CheckPasswordCallback = (err: Error | undefined, isSame: boolean) => void
@@ -20,7 +21,9 @@ interface UserAttributes {
 
 // 3. Atributos opcionais na criação (o ID é gerado pelo banco)
 export interface UserCreationAttributes extends Optional<UserAttributes, 'id'> {}
-export interface UserInstance  extends Model<UserAttributes, UserCreationAttributes>, User { }
+export interface UserInstance  extends Model<UserAttributes, UserCreationAttributes>, User { 
+  episodes?: EpisodeInstance []
+}
 // 4. A Classe que estende o Model e implementa os atributos
 export class User extends Model<UserAttributes, UserCreationAttributes> {
   public id!: number
