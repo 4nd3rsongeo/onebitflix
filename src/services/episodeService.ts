@@ -68,15 +68,13 @@ export const episodeService = {
     //         return watchTime
     //     }        
     // }
-    setWatchTime: async ({ userId, episodeId, seconds }: WatchTimeAttributes) => {
-    // O upsert tenta atualizar; se não encontrar, cria um novo.
-    // Ele resolve o problema da condição de corrida nativamente.
-    const [watchTime] = await WatchTime.upsert({
-        userId,
-        episodeId,
-        seconds
-    });
+    setWatchTime: async ({ userId, episodeId, seconds }: WatchTimeAttributes) => {    
+        const [watchTime] = await WatchTime.upsert({
+            userId,
+            episodeId,
+            seconds
+        });
 
-    return watchTime;
-}
+        return watchTime;
+    }
 }
