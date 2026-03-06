@@ -10,7 +10,7 @@ export const authController = {
             const userAlreadyExists = await userService.findByEmail(email)
 
             if (userAlreadyExists) {
-                throw new Error('Este e-mail já está cadastrado.')
+                return res.status(400).json({ message: 'Este e-mail já está cadastrado.' });
             }
             const user = await userService.create({
                 firstName,
@@ -46,7 +46,7 @@ export const authController = {
                     firstName: user.firstName                    
                 }
                 const token = jwtService.sign(payload)
-                return res.json({ authenticated: true, ...payload, token})
+                return res.status(200).json({ authenticated: true, ...payload, token})
             })
         } catch (err) {
             if(err instanceof Error) {

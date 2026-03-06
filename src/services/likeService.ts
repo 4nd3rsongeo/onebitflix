@@ -10,12 +10,14 @@ export const likeService = {
     },
 
     delete: async (userId: number, courseId: number) => {
-        await Like.destroy({
+        const deleted = await Like.destroy({
             where: {
                 userId,
                 courseId
             }
         })
+        console.log("Registros deletados:", deleted)
+
     },
     
     isLiked: async (userId: number, courseId: number) => {
