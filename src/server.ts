@@ -7,7 +7,7 @@ import { sequelize } from "./database";
 import { adminJs, adminJSRouter } from "./adminjs";
 import { router } from "./routes";
 
-
+//preparado para deploy
 const app = express();
 
 app.use(cors())
