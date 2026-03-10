@@ -12,6 +12,16 @@ import { brandingOptions } from "./branding";
 import { authenticationOptions } from "./authentication";
 import { userService } from "../services/userService";
 
+import session from "express-session";
+import connectSession from "connect-session-sequelize";
+import { ADMINJS_COOKIE_PASSWORD } from "../config/environment";
+
+import {EXPRESS_SESSION_PASSWORD} from "../config/environment";
+
+const SequelizeStore = connectSession(session.Store)
+const store = new SequelizeStore({db: sequelize})
+store.sync()
+
 AdminJS.registerAdapter(AdminJSSequelize)
 
 
@@ -24,14 +34,12 @@ export const adminJs = new AdminJS({
     dashboard: dashboardOptions
 })
 
-// 1. Gere uma chave longa (exemplo de 32+ caracteres)
-const COOKIE_SECRET = 'sua-chave-ultra-secreta-com-mais-de-32-caracteres-123';
-
 const sessionOptions = {
   resave: false,
   saveUninitialized: false,
-  secret: COOKIE_SECRET, 
+  secret: EXPRESS_SESSION_PASSWORD, 
   cookie: { 
+    store: store,
     secure: false, // false para localhost
     httpOnly: true,
     maxAge: 1000 * 60 * 60 * 24 // 24 horas de duração
@@ -54,9 +62,10 @@ export const adminJSRouter = AdminJSExpress.buildAuthenticatedRouter(
       }
       return null;
     },
-    // O cookiePassword também deve ser longo!
-    cookiePassword: 'outra-string-muito-longa-xxxxxxxxxxxxxxxxxxxxxxxxxxxxx-para-o-cookie-32-chars',
+    // O cookiePassword também deve ser longo!          
+      cookiePassword: ADMINJS_COOKIE_PASSWORD,    
   },
   null,
+  
   sessionOptions
 );

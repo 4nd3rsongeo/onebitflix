@@ -1,0 +1,2 @@
+ npm install adminjs@6 @adminjs/upload@3 adminjs/sequelize@3 adminjs/express@5
+ npm install adminjs@6 @adminjs/upload@3 @adminjs/sequelize@3 @adminjs/express@5

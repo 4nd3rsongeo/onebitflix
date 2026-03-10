@@ -1,12 +1,11 @@
 import jwt, {SignOptions} from 'jsonwebtoken';
+import { JWT_KEY } from '../config/environment';
 
 interface JwtPayload {
   id: string;  
   email: string;
   firstName: string;
 }
-
-const JWT_SECRET = process.env.JWT_SECRET || 'sua_chave_secreta_super_segura';
 const EXPIRES_IN = '7d';
 
 export const jwtService = {
@@ -14,7 +13,7 @@ export const jwtService = {
    * Gera um novo token JWT
    */
   sign(payload: JwtPayload): string {
-    return jwt.sign(payload, JWT_SECRET, {
+    return jwt.sign(payload, JWT_KEY, {
       expiresIn: EXPIRES_IN,
     });
   },
@@ -24,7 +23,7 @@ export const jwtService = {
    */
   verify(token: string,  callbackfn: jwt.VerifyCallback){
    
-      jwt.verify(token, JWT_SECRET, callbackfn);
+      jwt.verify(token, JWT_KEY, callbackfn);
    
     }
   
