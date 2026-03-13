@@ -1,21 +1,9 @@
-"use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.courseService = void 0;
-const sequelize_1 = require("sequelize");
-const models_1 = require("../models");
+import { Op } from "sequelize";
+import { Course } from "../models/index.js";
 // console.log('Course é:', Course)
-exports.courseService = {
-    findByIdWithEpisodes: (id) => __awaiter(void 0, void 0, void 0, function* () {
-        const courseWithEpisodes = yield models_1.Course.findByPk(id, {
+export const courseService = {
+    findByIdWithEpisodes: async (id) => {
+        const courseWithEpisodes = await Course.findByPk(id, {
             attributes: [
                 'id',
                 'name',
@@ -37,9 +25,9 @@ exports.courseService = {
             }
         });
         return courseWithEpisodes;
-    }),
-    getRandomFeaturedCourses: () => __awaiter(void 0, void 0, void 0, function* () {
-        const featuredCourses = yield models_1.Course.findAll({
+    },
+    getRandomFeaturedCourses: async () => {
+        const featuredCourses = await Course.findAll({
             attributes: [
                 'id',
                 'name',
@@ -52,17 +40,16 @@ exports.courseService = {
         });
         const randomFeaturedCourses = featuredCourses.sort(() => 0.5 - Math.random());
         return randomFeaturedCourses.slice(0, 3);
-    }),
-    getTopTenNewest: () => __awaiter(void 0, void 0, void 0, function* () {
-        const courses = yield models_1.Course.findAll({
+    },
+    getTopTenNewest: async () => {
+        const courses = await Course.findAll({
             limit: 10,
             order: [['created_at', 'DESC']]
         });
         return courses;
-    }),
-    getTopTenByLikes: () => __awaiter(void 0, void 0, void 0, function* () {
-        var _a;
-        const result = yield ((_a = models_1.Course.sequelize) === null || _a === void 0 ? void 0 : _a.query(`SELECT 
+    },
+    getTopTenByLikes: async () => {
+        const result = await Course.sequelize?.query(`SELECT 
             courses.id,
             courses.name,
             courses.synopsis,
@@ -76,7 +63,7 @@ exports.courseService = {
                 GROUP BY courses.id
                 ORDER BY likes DESC
                 LIMIT 10;
-        `));
+        `);
         if (result) {
             const [topTen] = result;
             return topTen;
@@ -84,10 +71,10 @@ exports.courseService = {
         else {
             return null;
         }
-    }),
-    findByName: (name, page, perPage) => __awaiter(void 0, void 0, void 0, function* () {
+    },
+    findByName: async (name, page, perPage) => {
         const offset = (page - 1) * perPage;
-        const { count, rows } = yield models_1.Course.findAndCountAll({
+        const { count, rows } = await Course.findAndCountAll({
             attributes: [
                 'id',
                 'name',
@@ -97,7 +84,7 @@ exports.courseService = {
             where: {
                 name: {
                     //case insensitive like
-                    [sequelize_1.Op.iLike]: `%${name}%`
+                    [Op.iLike]: `%${name}%`
                 }
             },
             limit: perPage,
@@ -109,5 +96,5 @@ exports.courseService = {
             perPage,
             total: count
         };
-    }),
+    },
 };

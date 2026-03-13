@@ -1,12 +1,12 @@
 // src/models/index.ts
 
-import { Category } from './Category'
-import { Course } from './Course'
-import { Episode } from './Episode'
-import { Favorite } from './Favorite'
-import { User } from './User'
-import { Like } from './Like'
-import { WatchTime } from './WatchTime'
+import { Category } from './Category.js'
+import { Course } from './Course.js'
+import { Episode } from './Episode.js'
+import { Favorite } from './Favorite.js'
+import { User } from './User.js'
+import { Like } from './Like.js'
+import { WatchTime } from './WatchTime.js'
 
 Category.hasMany(Course, {as: 'courses'})
 

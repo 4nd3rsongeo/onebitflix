@@ -1,7 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.brandingOptions = void 0;
-exports.brandingOptions = {
+export const brandingOptions = {
     companyName: 'OneBitFlix',
     logo: '/logoOnebitflix.svg',
     theme: {

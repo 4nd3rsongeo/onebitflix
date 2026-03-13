@@ -1,15 +1,7 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.sequelize = void 0;
-const sequelize_1 = require("sequelize");
+import { Sequelize } from "sequelize";
+import { DATABASE_URL } from "../config/environment.js";
 // console.log("CARREGOU O DATABASE.TS");
-exports.sequelize = new sequelize_1.Sequelize({
-    dialect: 'postgres',
-    host: 'localhost',
-    port: 5432,
-    database: 'onebitflix_development',
-    username: 'onebitflix',
-    password: 'onebitflix',
+export const sequelize = new Sequelize(DATABASE_URL, {
     define: {
         underscored: true
     }

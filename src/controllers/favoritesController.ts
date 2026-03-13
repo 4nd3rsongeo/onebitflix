@@ -1,6 +1,6 @@
 import { Response } from "express"
-import { AuthenticatedRequest } from "../middlewares/auth"
-import { favoriteService } from "../services/favoriteService"
+import { AuthenticatedRequest } from "../middlewares/auth.js"
+import { favoriteService } from "../services/favoriteService.js"
 
 export const favoritesController = {
     //GET /favorites
@@ -20,7 +20,7 @@ export const favoritesController = {
     //POST /favorites
     save: async (req: AuthenticatedRequest, res:Response) => {
         const userId = req.user!.id
-        const { courseId } = req.body
+        const { courseId } = (req as any).body
 
         try {
             const favorite = await favoriteService.create(userId, +courseId)
@@ -35,7 +35,7 @@ export const favoritesController = {
     //DELETE /favorites/:id
     delete: async (req: AuthenticatedRequest, res: Response) => {
         const userId = req.user!.id
-        const {courseId} = req.body
+        const {courseId} = (req as any).body
         try {            
             await favoriteService.delete(userId, Number(courseId))
             res.status(204).json({userId, courseId})        

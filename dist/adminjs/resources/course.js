@@ -1,28 +1,32 @@
-"use strict";
-// src/adminjs/resources/course.ts
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.courseResourceFeatures = exports.courseResourceOptions = void 0;
-const upload_1 = __importDefault(require("@adminjs/upload"));
-const path_1 = __importDefault(require("path"));
-exports.courseResourceOptions = {
-    parent: { name: 'Catálogo' },
+import uploadFileFeature from "@adminjs/upload";
+import path from 'path';
+import componentLoader from "../component-loader.js";
+export const courseResourceOptions = {
+    navigation: 'Catálogo',
     editProperties: ['name', 'synopsis', 'uploadThumbnail', 'featured', 'categoryId'],
     filterProperties: ['name', 'synopsis', 'featured', 'categoryId', 'createdAt', 'updatedAt'],
     listProperties: ['id', 'name', 'featured', 'categoryId'],
-    showProperties: ['id', 'name', 'synopsis', 'featured', 'thumbnailUrl', 'categoryId', 'createdAt', 'updatedAt']
+    showProperties: ['id', 'name', 'synopsis', 'featured', 'thumbnailUrl', 'categoryId', 'createdAt', 'updatedAt'],
+    properties: {
+        uploadThumbnail: {
+            isVisible: { edit: true, filter: false, list: false, show: true },
+        },
+        thumbnailUrl: {
+            isVisible: { edit: false, filter: true, list: true, show: true },
+        }
+    }
 };
 // note que entre as featuretypes já existem
 // objetos para aws ou google cloud service
-exports.courseResourceFeatures = [
-    (0, upload_1.default)({
+export const courseResourceFeatures = [
+    // @ts-ignore — @adminjs/upload CJS types not fully compatible with NodeNext
+    uploadFileFeature({
+        componentLoader,
         provider: {
             local: {
-                bucket: path_1.default.join(__dirname, '..', '..', '..', 'public'),
+                bucket: path.join(process.cwd(), 'public'),
                 opts: {
-                    baseUrl: '/uploads'
+                    baseUrl: '/'
                 }
             }
         },
@@ -30,6 +34,12 @@ exports.courseResourceFeatures = [
             key: 'thumbnailUrl',
             file: 'uploadThumbnail'
         },
-        uploadPath: (record, filename) => `thumbnails/course-${record.get('id')}/${filename}`
+        uploadPath: (record, filename) => {
+            const id = record.params.id || 'temp';
+            return `thumbnails/course-${id}/${filename}`;
+        },
+        validation: {
+            mimeTypes: ['image/png', 'image/jpeg']
+        }
     })
 ];

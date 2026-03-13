@@ -1,71 +1,74 @@
 import AdminJS from "adminjs";
 import AdminJSExpress from "@adminjs/express";
-import AdminJSSequelize from "@adminjs/sequelize"
-import { sequelize } from "../database";
-import { adminJsResources } from "./resources";
+import AdminJSSequelize from "@adminjs/sequelize";
+import componentLoader from "./component-loader.js"; 
+import path from "path";
+import fs from "fs";
 
-import bcrypt from 'bcrypt'
-import { locale } from "./locale";
-import { Category, Course, Episode, User } from '../models'
-import { dashboardOptions } from "./dashboard";
-import { brandingOptions } from "./branding";
-import { authenticationOptions } from "./authentication";
-import { userService } from "../services/userService";
+// 1. Registre o adaptador APENAS UMA VEZ
+// @ts-ignore — adminjs v6 CJS types are not fully compatible with NodeNext
+AdminJS.registerAdapter(AdminJSSequelize);
+
+import { sequelize } from "../database/index.js";
+import { adminJsResources } from "./resources/index.js";
+import { locale } from "./locale.js";
+import { dashboardOptions } from "./dashboard.js";
+import { brandingOptions } from "./branding.js";
+import { authenticationOptions } from "./authentication.js";
 
 import session from "express-session";
 import connectSession from "connect-session-sequelize";
-import { ADMINJS_COOKIE_PASSWORD } from "../config/environment";
+import { EXPRESS_SESSION_PASSWORD } from "../config/environment.js";
 
-import {EXPRESS_SESSION_PASSWORD} from "../config/environment";
+// 2. Configuração da Store de Sessão
+const SequelizeStore = connectSession(session.Store);
+const store = new SequelizeStore({ db: sequelize });
 
-const SequelizeStore = connectSession(session.Store)
-const store = new SequelizeStore({db: sequelize})
-store.sync()
-
-AdminJS.registerAdapter(AdminJSSequelize)
-
-
+// @ts-ignore — adminjs v6 CJS types are not fully compatible with NodeNext
 export const adminJs = new AdminJS({
-    databases:[sequelize],
-    rootPath:"/admin",
-    resources: adminJsResources,
-    branding: brandingOptions,
-    locale: locale,
-    dashboard: dashboardOptions
-})
+  databases: [sequelize],
+  rootPath: "/admin",
+  resources: adminJsResources,
+  branding: brandingOptions,
+  locale: locale,
+  dashboard: dashboardOptions,
+  componentLoader,
+  // Este caminho resolve para a raiz do projeto (onde está o package.json)
+  // tanto rodando de 'src' quanto de 'dist'.
+  projectRoot: path.resolve(import.meta.dirname, '..', '..'),
+  env: {
+    // SEMPRE 'development' aqui para o AdminJS.
+    // Isso garante que o bundle de 55KB funcione em qualquer modo.
+    NODE_ENV: 'development' 
+  }
+} as any);
 
-const sessionOptions = {
+// Usamos o watch() pois no Windows ele é mais resiliente para garantir
+// que o bundle.js seja lido corretamente pelo Express.
+adminJs.watch();
+
+const sessionOptions: session.SessionOptions = {
   resave: false,
   saveUninitialized: false,
-  secret: EXPRESS_SESSION_PASSWORD, 
-  cookie: { 
-    store: store,
-    secure: false, // false para localhost
+  secret: EXPRESS_SESSION_PASSWORD,
+  store: store, 
+  cookie: {
+    secure: false, 
     httpOnly: true,
-    maxAge: 1000 * 60 * 60 * 24 // 24 horas de duração
+    maxAge: 1000 * 60 * 60 * 24 
   }
 };
 
+// @ts-ignore — @adminjs/express v5 CJS types are not fully compatible with NodeNext
 export const adminJSRouter = AdminJSExpress.buildAuthenticatedRouter(
   adminJs,
-  {
-    // Use as opções que você já tinha importado ou defina aqui
-    authenticate: async (email, password) => {
-      const user= await userService.findByEmail(email);
-      // CUIDADO: Se sua classe 'user' usa bcrypt, use bcrypt.compareSync(password, user.password)
-      if (!user) {
-        return null;
-      }
-      const isPasswordValid = await bcrypt.compare(password, user.password);
-      if (user && isPasswordValid) {
-        return user;
-      }
-      return null;
-    },
-    // O cookiePassword também deve ser longo!          
-      cookiePassword: ADMINJS_COOKIE_PASSWORD,    
-  },
+  authenticationOptions,
   null,
-  
-  sessionOptions
+  sessionOptions,
+  {
+    maxFileSize: 1024 * 1024 * 1024, // 1GB
+    maxFieldsSize: 1024 * 1024 * 1024, // 1GB
+    uploadDir: path.resolve(process.cwd(), 'uploads', 'temp'),
+    keepExtensions: true,
+  } as any
 );

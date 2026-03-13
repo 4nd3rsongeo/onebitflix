@@ -1,24 +1,28 @@
-"use strict";
-// src/adminjs/resources/episode.ts
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.episodeResourceFeatures = exports.episodeResourceOptions = void 0;
-const upload_1 = __importDefault(require("@adminjs/upload"));
-const path_1 = __importDefault(require("path"));
-exports.episodeResourceOptions = {
+import uploadFileFeature from "@adminjs/upload";
+import path from 'path';
+import componentLoader from '../component-loader.js';
+export const episodeResourceOptions = {
     navigation: 'Catálogo',
     editProperties: ['name', 'synopsis', 'courseId', 'order', 'uploadVideo', 'secondsLong'],
     filterProperties: ['name', 'synopsis', 'courseId', 'secondsLong', 'createdAt', 'updatedAt'],
     listProperties: ['id', 'name', 'courseId', 'order', 'secondsLong'],
-    showProperties: ['id', 'name', 'synopsis', 'courseId', 'order', 'videoUrl', 'secondsLong', 'createdAt', 'updatedAt']
+    showProperties: ['id', 'name', 'synopsis', 'courseId', 'order', 'videoUrl', 'secondsLong', 'createdAt', 'updatedAt'],
+    properties: {
+        uploadVideo: {
+            isVisible: { edit: true, filter: false, list: false, show: true },
+        },
+        videoUrl: {
+            isVisible: { edit: false, filter: true, list: true, show: true },
+        }
+    }
 };
-exports.episodeResourceFeatures = [
-    (0, upload_1.default)({
+export const episodeResourceFeatures = [
+    // @ts-ignore — @adminjs/upload CJS types not fully compatible with NodeNext
+    uploadFileFeature({
+        componentLoader,
         provider: {
             local: {
-                bucket: path_1.default.join(__dirname, '..', '..', '..', 'uploads'),
+                bucket: path.join(process.cwd(), 'uploads'),
                 opts: {
                     baseUrl: '/uploads'
                 }
@@ -28,6 +32,12 @@ exports.episodeResourceFeatures = [
             key: 'videoUrl',
             file: 'uploadVideo'
         },
-        uploadPath: (record, filename) => `videos/course-${record.get('courseId')}/${filename}`
+        uploadPath: (record, filename) => {
+            const courseId = record.get('courseId') || record.params.courseId || 'unknown';
+            return `videos/course-${courseId}/${filename}`;
+        },
+        validation: {
+            mimeTypes: ['video/mp4', 'video/x-msvideo', 'video/quicktime']
+        }
     })
 ];

@@ -1,12 +1,12 @@
 import express from 'express'
-import { categoriesController } from './controllers/categoriesController'
-import { coursesController } from './controllers/coursesController'
-import { episodesController } from './controllers/episodesController'
-import { authController } from './controllers/authController'
-import { ensureAuth, ensureAuthViaQuery } from './middlewares/auth'
-import { favoritesController } from './controllers/favoritesController'
-import { likesController } from './controllers/likesController'
-import { usersController } from './controllers/usersController'
+import { categoriesController } from './controllers/categoriesController.js'
+import { coursesController } from './controllers/coursesController.js'
+import { episodesController } from './controllers/episodesController.js'
+import { authController } from './controllers/authController.js'
+import { ensureAuth, ensureAuthViaQuery } from './middlewares/auth.js'
+import { favoritesController } from './controllers/favoritesController.js'
+import { likesController } from './controllers/likesController.js'
+import { usersController } from './controllers/usersController.js'
 
 const router = express.Router()
 
@@ -40,5 +40,3 @@ router.put('/users/current/password', ensureAuth, usersController.updatedPasswor
 router.get('/users/current/watching', ensureAuth, usersController.watching)
 
 export {router}
-
-

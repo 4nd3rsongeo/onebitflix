@@ -1,16 +1,4 @@
-"use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.userService = void 0;
-const models_1 = require("../models");
+import { User } from "../models/index.js";
 function filterLastEpisodesByCourse(episodes) {
     const coursesOnList = [];
     const lastEpisodes = episodes.reduce((currentList, episode) => {
@@ -28,31 +16,31 @@ function filterLastEpisodesByCourse(episodes) {
     }, []);
     return lastEpisodes;
 }
-exports.userService = {
-    findByEmail: (email) => __awaiter(void 0, void 0, void 0, function* () {
-        const user = yield models_1.User.findOne({
+export const userService = {
+    findByEmail: async (email) => {
+        const user = await User.findOne({
             where: {
                 email
             }
         });
         return user;
-    }),
-    create: (attributes) => __awaiter(void 0, void 0, void 0, function* () {
-        const user = yield models_1.User.create(attributes);
+    },
+    create: async (attributes) => {
+        const user = await User.create(attributes);
         return user;
-    }),
-    update: (id, attributes) => __awaiter(void 0, void 0, void 0, function* () {
-        const [affectedRows, updatedUsers] = yield models_1.User.update(attributes, { where: { id }, returning: true });
+    },
+    update: async (id, attributes) => {
+        const [affectedRows, updatedUsers] = await User.update(attributes, { where: { id }, returning: true });
         return updatedUsers[0];
-    }),
-    updatePassword: (id, password) => __awaiter(void 0, void 0, void 0, function* () {
-        const [affectedRows, updatedUsers] = yield models_1.User.update({ password }, {
+    },
+    updatePassword: async (id, password) => {
+        const [affectedRows, updatedUsers] = await User.update({ password }, {
             where: { id },
             returning: true,
             individualHooks: true
         });
         return updatedUsers[0];
-    }),
+    },
     // getKeepWatchingList: async (id: number) => {
     //     const userWithWatchingEpisodes = await User.findByPk(id, {
     //         include: {
@@ -71,8 +59,8 @@ exports.userService = {
     //     keepWatchingList.sort((a,b) => a.watchTime!.updatedAt < b.watchTime.updatedAt ? 1 : -1)
     //     return keepWatchingList
     // }
-    getKeepWatchingList: (id) => __awaiter(void 0, void 0, void 0, function* () {
-        const userWithWatchingEpisodes = yield models_1.User.findByPk(id, {
+    getKeepWatchingList: async (id) => {
+        const userWithWatchingEpisodes = await User.findByPk(id, {
             include: {
                 association: 'Episodes',
                 attributes: [
@@ -109,5 +97,5 @@ exports.userService = {
         // @ts-ignore
         keepWatchingList.sort((a, b) => a.watchTime.updatedAt < b.watchTime.updatedAt ? 1 : -1);
         return keepWatchingList;
-    })
+    }
 };

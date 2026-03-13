@@ -1,5 +1,5 @@
 import { DataTypes, Optional, Model } from "sequelize"
-import { sequelize } from "../database"
+import { sequelize } from "../database/index.js"
 
 export interface Category {
     id: number

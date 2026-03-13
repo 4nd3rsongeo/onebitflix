@@ -1,63 +1,59 @@
-"use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.adminJSRouter = exports.adminJs = void 0;
-const adminjs_1 = __importDefault(require("adminjs"));
-const express_1 = __importDefault(require("@adminjs/express"));
-const sequelize_1 = __importDefault(require("@adminjs/sequelize"));
-const database_1 = require("../database");
-const resources_1 = require("./resources");
-const bcrypt_1 = __importDefault(require("bcrypt"));
-const locale_1 = require("./locale");
-const dashboard_1 = require("./dashboard");
-const branding_1 = require("./branding");
-const userService_1 = require("../services/userService");
-adminjs_1.default.registerAdapter(sequelize_1.default);
-exports.adminJs = new adminjs_1.default({
-    databases: [database_1.sequelize],
+import AdminJS from "adminjs";
+import AdminJSExpress from "@adminjs/express";
+import AdminJSSequelize from "@adminjs/sequelize";
+import componentLoader from "./component-loader.js";
+import path from "path";
+// 1. Registre o adaptador APENAS UMA VEZ
+// @ts-ignore — adminjs v6 CJS types are not fully compatible with NodeNext
+AdminJS.registerAdapter(AdminJSSequelize);
+import { sequelize } from "../database/index.js";
+import { adminJsResources } from "./resources/index.js";
+import { locale } from "./locale.js";
+import { dashboardOptions } from "./dashboard.js";
+import { brandingOptions } from "./branding.js";
+import { authenticationOptions } from "./authentication.js";
+import session from "express-session";
+import connectSession from "connect-session-sequelize";
+import { EXPRESS_SESSION_PASSWORD } from "../config/environment.js";
+// 2. Configuração da Store de Sessão
+const SequelizeStore = connectSession(session.Store);
+const store = new SequelizeStore({ db: sequelize });
+// @ts-ignore — adminjs v6 CJS types are not fully compatible with NodeNext
+export const adminJs = new AdminJS({
+    databases: [sequelize],
     rootPath: "/admin",
-    resources: resources_1.adminJsResources,
-    branding: branding_1.brandingOptions,
-    locale: locale_1.locale,
-    dashboard: dashboard_1.dashboardOptions
+    resources: adminJsResources,
+    branding: brandingOptions,
+    locale: locale,
+    dashboard: dashboardOptions,
+    componentLoader,
+    // Este caminho resolve para a raiz do projeto (onde está o package.json)
+    // tanto rodando de 'src' quanto de 'dist'.
+    projectRoot: path.resolve(import.meta.dirname, '..', '..'),
+    env: {
+        // SEMPRE 'development' aqui para o AdminJS.
+        // Isso garante que o bundle de 55KB funcione em qualquer modo.
+        NODE_ENV: 'development'
+    }
 });
-// 1. Gere uma chave longa (exemplo de 32+ caracteres)
-const COOKIE_SECRET = 'sua-chave-ultra-secreta-com-mais-de-32-caracteres-123';
+// Usamos o watch() pois no Windows ele é mais resiliente para garantir
+// que o bundle.js seja lido corretamente pelo Express.
+adminJs.watch();
 const sessionOptions = {
     resave: false,
     saveUninitialized: false,
-    secret: COOKIE_SECRET,
+    secret: EXPRESS_SESSION_PASSWORD,
+    store: store,
     cookie: {
         secure: false,
         httpOnly: true,
-        maxAge: 1000 * 60 * 60 * 24 // 24 horas de duração
+        maxAge: 1000 * 60 * 60 * 24
     }
 };
-exports.adminJSRouter = express_1.default.buildAuthenticatedRouter(exports.adminJs, {
-    // Use as opções que você já tinha importado ou defina aqui
-    authenticate: (email, password) => __awaiter(void 0, void 0, void 0, function* () {
-        const user = yield userService_1.userService.findByEmail(email);
-        // CUIDADO: Se sua classe 'user' usa bcrypt, use bcrypt.compareSync(password, user.password)
-        if (!user) {
-            return null;
-        }
-        const isPasswordValid = yield bcrypt_1.default.compare(password, user.password);
-        if (user && isPasswordValid) {
-            return user;
-        }
-        return null;
-    }),
-    // O cookiePassword também deve ser longo!
-    cookiePassword: 'outra-string-muito-longa-xxxxxxxxxxxxxxxxxxxxxxxxxxxxx-para-o-cookie-32-chars',
-}, null, sessionOptions);
+// @ts-ignore — @adminjs/express v5 CJS types are not fully compatible with NodeNext
+export const adminJSRouter = AdminJSExpress.buildAuthenticatedRouter(adminJs, authenticationOptions, null, sessionOptions, {
+    maxFileSize: 1024 * 1024 * 1024, // 1GB
+    maxFieldsSize: 1024 * 1024 * 1024, // 1GB
+    uploadDir: path.resolve(process.cwd(), 'uploads', 'temp'),
+    keepExtensions: true,
+});

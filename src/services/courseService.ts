@@ -1,5 +1,5 @@
 import { Op } from "sequelize";
-import { Course } from "../models";
+import { Course } from "../models/index.js";
 
 // console.log('Course é:', Course)
 

@@ -1,12 +1,12 @@
 import { Response } from "express";
-import { AuthenticatedRequest } from "../middlewares/auth";
-import { likeService } from "../services/likeService";
+import { AuthenticatedRequest } from "../middlewares/auth.js";
+import { likeService } from "../services/likeService.js";
 
 export const likesController = {
     //POST /likes
     save: async (req: AuthenticatedRequest, res: Response) => {
         const userId = req.user!.id
-        const { courseId } = req.body
+        const { courseId } = (req as any).body
 
         try {
             const like = await likeService.create(userId, courseId)
@@ -21,7 +21,7 @@ export const likesController = {
     //DELETE /likes:id
     delete: async(req: AuthenticatedRequest, res: Response) => {
         const userId = req.user!.id
-        const courseId = req.params.id
+        const courseId = (req as any).params.id
 
         try {
             await likeService.delete(+userId, +courseId)

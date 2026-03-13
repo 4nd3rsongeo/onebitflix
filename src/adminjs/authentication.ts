@@ -1,20 +1,18 @@
 import { AuthenticationOptions } from "@adminjs/express"
 import bcrypt from 'bcrypt'
-import { User } from "../models"
-import { ADMINJS_COOKIE_PASSWORD } from "../config/environment"
+import { userService } from "../services/userService.js"
+import { ADMINJS_COOKIE_PASSWORD } from "../config/environment.js"
 
 export const authenticationOptions: AuthenticationOptions = {
   authenticate: async (email, password) => {
-    const user = await User.findOne({where: { email }})
+    const user = await userService.findByEmail(email)
 
-    if (user && user.role === 'admin') {
-      const matched = await bcrypt.compare(password, user.password)
-      
-      if(matched){
+    if (user && (await bcrypt.compare(password, user.password))) {
+      if (user.role === 'admin') {
         return user
-      }      
+      }
     }
     return false
   },
-  cookiePassword:ADMINJS_COOKIE_PASSWORD
+  cookiePassword: ADMINJS_COOKIE_PASSWORD
 }

@@ -1,5 +1,5 @@
 import { Sequelize } from "sequelize"
-import { DATABASE_URL } from "../config/environment"
+import { DATABASE_URL } from "../config/environment.js"
 // console.log("CARREGOU O DATABASE.TS");
 export const sequelize = new Sequelize(
     DATABASE_URL, {

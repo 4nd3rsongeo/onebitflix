@@ -1,29 +1,26 @@
-"use strict";
 // src/adminjs/resources.ts
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.adminJsResources = void 0;
-const models_1 = require("../../models");
-const category_1 = require("./category");
-const course_1 = require("./course");
-const episode_1 = require("./episode");
-const user_1 = require("./user");
-exports.adminJsResources = [
+import { Category, Course, Episode, User } from "../../models/index.js";
+import { categoryResourceOptions } from "./category.js";
+import { courseResourceFeatures, courseResourceOptions } from "./course.js";
+import { episodeResourceFeatures, episodeResourceOptions } from "./episode.js";
+import { userResourceOptions } from "./user.js";
+export const adminJsResources = [
     {
-        resource: models_1.Category,
-        options: category_1.categoryResourceOptions
+        resource: Category,
+        options: categoryResourceOptions
     },
     {
-        resource: models_1.Course,
-        options: course_1.courseResourceOptions,
-        features: course_1.courseResourceFeatures
+        resource: Course,
+        options: courseResourceOptions,
+        features: courseResourceFeatures
     },
     {
-        resource: models_1.Episode,
-        options: episode_1.episodeResourceOptions,
-        features: episode_1.episodeResourceFeatures
+        resource: Episode,
+        options: episodeResourceOptions,
+        features: episodeResourceFeatures
     },
     {
-        resource: models_1.User,
-        options: user_1.userResourceOptions
+        resource: User,
+        options: userResourceOptions
     }
 ];

@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { episodeService } from "../services/episodeService";
-import { AuthenticatedRequest } from "../middlewares/auth";
+import { episodeService } from "../services/episodeService.js";
+import { AuthenticatedRequest } from "../middlewares/auth.js";
 
 export const episodesController = {
     stream: async (req:Request, res: Response) => {
@@ -20,7 +20,7 @@ export const episodesController = {
     //GET /episodes/:id/watchTime
     getWatchTime: async (req:AuthenticatedRequest, res: Response) => {
         const userId = req.user!.id
-        const episodeId = +req.params.id
+        const episodeId = +(req as any).params.id
 
         try {
             const watchTime = await episodeService.getWatchTime(userId, episodeId)
@@ -34,8 +34,8 @@ export const episodesController = {
     //POST /episodes/:id/watchTime
     setWatchTime: async (req:AuthenticatedRequest, res: Response) => {
         const userId = req.user!.id
-        const episodeId = +req.params.id
-        const { seconds } = req.body
+        const episodeId = +(req as any).params.id
+        const { seconds } = (req as any).body
 
         try {
             const watchTime = await episodeService.setWatchTime({

@@ -1,12 +1,12 @@
 import { Response } from "express";
 import path from "path";
 import fs from 'fs';
-import { WatchTimeAttributes } from "../models/WatchTime";
-import { WatchTime } from "../models";
+import { WatchTimeAttributes } from "../models/WatchTime.js";
+import { WatchTime } from "../models/index.js";
 
 export const episodeService = {
     streamEpisodeToResponse: ( res: Response, videoUrl: string, range: string | undefined ) => {
-        const filePath = path.join(__dirname,'..', '..', 'uploads', videoUrl)
+        const filePath = path.join(import.meta.dirname,'..', '..', 'uploads', videoUrl)
         const fileStat = fs.statSync(filePath)
         
         if(range) {

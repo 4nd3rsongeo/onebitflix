@@ -1,8 +1,5 @@
-"use strict";
 // src/adminjs/locale.ts
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.locale = void 0;
-exports.locale = {
+export const locale = {
     language: 'pt-BR',
     translations: {
         actions: {

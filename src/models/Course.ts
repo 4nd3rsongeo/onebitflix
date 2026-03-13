@@ -1,6 +1,6 @@
 // src/models/Course.ts
 
-import { sequelize } from '../database'
+import { sequelize } from '../database/index.js'
 import { DataTypes, Model, Optional } from 'sequelize'
 
 export interface Course {

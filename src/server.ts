@@ -1,24 +1,44 @@
-import dotenv from "dotenv";
-dotenv.config()
+import "dotenv/config";
 
 import express from "express";
 import cors from "cors";
-import { sequelize } from "./database";
+import path from "path";
+import { sequelize } from "./database/index.js";
 import AdminJS from 'adminjs'
-import { adminJs, adminJSRouter } from "./adminjs";
+import { adminJs, adminJSRouter } from "./adminjs/index.js";
 
-import { router } from "./routes";
+import { router } from "./routes.js";
 
 //preparado para deploy
 const app = express();
 
 app.use(cors())
 
+import fs from "fs";
 
+// Serve AdminJS components bundle explicitly — AdminJS v7's internal
+// sendFile with relative .adminjs/ path fails with Express v5 in production.
+app.get('/admin/frontend/assets/components.bundle.js', (_req, res) => {
+  const bundlePath = path.resolve(process.cwd(), '.adminjs', 'bundle.js');
+  console.log('[Bundle Route] HIT! Serving from:', bundlePath);
+  
+  if (fs.existsSync(bundlePath)) {
+    res.setHeader('Content-Type', 'application/javascript');
+    const stream = fs.createReadStream(bundlePath);
+    stream.pipe(res).on('error', (err) => {
+      console.error('[Bundle Route] Stream error:', err);
+      res.status(500).end();
+    });
+  } else {
+    console.error('[Bundle Route] File not found at:', bundlePath);
+    res.status(404).send('Bundle not found');
+  }
+});
 
 app.use(adminJs.options.rootPath, adminJSRouter);
 
 app.use(express.static('public'))
+app.use('/uploads', express.static(path.resolve(import.meta.dirname, '..', 'uploads')))
 
 app.use(express.json())
 

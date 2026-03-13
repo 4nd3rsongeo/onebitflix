@@ -1,31 +1,46 @@
-// src/adminjs/resources/episode.ts
-
 import uploadFileFeature from "@adminjs/upload";
-import { FeatureType, ResourceOptions } from "adminjs";
-import path from 'path'
+import { FeatureType, ResourceOptions, BaseRecord } from "adminjs";
+import path from 'path';
+import componentLoader from '../component-loader.js';
 
 export const episodeResourceOptions: ResourceOptions = {
   navigation: 'Catálogo',
-  editProperties: ['name', 'synopsis', 'courseId', 'order', 'uploadVideo', 'secondsLong'  ],
+  editProperties: ['name', 'synopsis', 'courseId', 'order', 'uploadVideo', 'secondsLong'],
   filterProperties: ['name', 'synopsis', 'courseId', 'secondsLong', 'createdAt', 'updatedAt'],
   listProperties: ['id', 'name', 'courseId', 'order', 'secondsLong'],
-  showProperties: ['id', 'name', 'synopsis', 'courseId', 'order', 'videoUrl', 'secondsLong', 'createdAt', 'updatedAt']
+  showProperties: ['id', 'name', 'synopsis', 'courseId', 'order', 'videoUrl', 'secondsLong', 'createdAt', 'updatedAt'],
+  properties: {
+    uploadVideo: {
+      isVisible: { edit: true, filter: false, list: false, show: true },
+    },
+    videoUrl: {
+      isVisible: { edit: false, filter: true, list: true, show: true },
+    }
+  }
 }
 
 export const episodeResourceFeatures: FeatureType[] = [
+  // @ts-ignore — @adminjs/upload CJS types not fully compatible with NodeNext
   uploadFileFeature({
+    componentLoader,
     provider: {
       local: {
-        bucket: path.join( __dirname, '..', '..', '..', 'uploads'),
+        bucket: path.join(process.cwd(), 'uploads'), 
         opts: {
           baseUrl: '/uploads'
         }
       }
     },
-  properties: {
-    key: 'videoUrl',
-    file: 'uploadVideo'
-  },
-  uploadPath: (record, filename) => `videos/course-${record.get('courseId')}/${filename}`
-  })
-] 
+    properties: {
+      key: 'videoUrl',
+      file: 'uploadVideo'
+    },
+    uploadPath: (record: BaseRecord, filename: string) => {
+      const courseId = record.get('courseId') || record.params.courseId || 'unknown';
+      return `videos/course-${courseId}/${filename}`;
+    },
+    validation: {
+      mimeTypes: ['video/mp4', 'video/x-msvideo', 'video/quicktime']
+    }
+  } as any)
+]

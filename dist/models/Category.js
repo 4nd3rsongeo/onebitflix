@@ -1,21 +1,18 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.Category = void 0;
-const sequelize_1 = require("sequelize");
-const database_1 = require("../database");
-exports.Category = database_1.sequelize.define('Category', {
+import { DataTypes } from "sequelize";
+import { sequelize } from "../database/index.js";
+export const Category = sequelize.define('Category', {
     id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: sequelize_1.DataTypes.INTEGER
+        type: DataTypes.INTEGER
     },
     name: {
         allowNull: false,
-        type: sequelize_1.DataTypes.STRING
+        type: DataTypes.STRING
     },
     position: {
         allowNull: false,
-        type: sequelize_1.DataTypes.INTEGER
+        type: DataTypes.INTEGER
     }
 });

@@ -1,4 +1,4 @@
-import { Favorite } from "../models"
+import { Favorite } from "../models/index.js"
 
 export const favoriteService = {
     //GET

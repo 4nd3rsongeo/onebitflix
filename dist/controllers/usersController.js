@@ -1,22 +1,10 @@
-"use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.usersController = void 0;
-const userService_1 = require("../services/userService");
-exports.usersController = {
+import { userService } from "../services/userService.js";
+export const usersController = {
     //GET /users/current/watching
-    watching: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    watching: async (req, res) => {
         const { id } = req.user;
         try {
-            const watching = yield userService_1.userService.getKeepWatchingList(id);
+            const watching = await userService.getKeepWatchingList(id);
             return res.json(watching);
         }
         catch (err) {
@@ -24,9 +12,9 @@ exports.usersController = {
                 return res.status(400).json({ message: err.message });
             }
         }
-    }),
+    },
     //GET /users/current
-    show: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    show: async (req, res) => {
         const currentUser = req.user;
         try {
             return res.json(currentUser);
@@ -36,13 +24,13 @@ exports.usersController = {
                 return res.status(400).json({ message: err.message });
             }
         }
-    }),
+    },
     //PUT /users/current
-    update: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    update: async (req, res) => {
         const { id } = req.user;
         const { firstName, lastName, phone, email, birth } = req.body;
         try {
-            const updatedUser = yield userService_1.userService.update(id, {
+            const updatedUser = await userService.update(id, {
                 firstName,
                 lastName,
                 phone,
@@ -56,18 +44,18 @@ exports.usersController = {
                 return res.status(400).json({ message: err.message });
             }
         }
-    }),
+    },
     //PUT /users/current/password
-    updatedPassword: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    updatedPassword: async (req, res) => {
         const user = req.user;
         const { currentPassword, newPassword } = req.body;
-        user.checkPassword(currentPassword, (err, isSame) => __awaiter(void 0, void 0, void 0, function* () {
+        user.checkPassword(currentPassword, async (err, isSame) => {
             try {
                 if (err)
                     return res.status(400).json({ message: err.message });
                 if (!isSame)
                     return res.status(400).json({ message: "Senha incorreta" });
-                yield userService_1.userService.updatePassword(+user.id, newPassword);
+                await userService.updatePassword(+user.id, newPassword);
                 return res.status(204).send();
             }
             catch (err) {
@@ -75,6 +63,6 @@ exports.usersController = {
                     return res.status(400).json({ message: err.message });
                 }
             }
-        }));
-    })
+        });
+    }
 };

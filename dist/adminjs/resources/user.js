@@ -1,7 +1,4 @@
-"use strict";
 // src/adminjs/resources/user.ts
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.userResourceOptions = void 0;
 const userResourceOptions = {
     navigation: 'Administração',
     properties: {
@@ -55,4 +52,4 @@ const userResourceOptions = {
         'updatedAt'
     ],
 };
-exports.userResourceOptions = userResourceOptions;
+export { userResourceOptions };

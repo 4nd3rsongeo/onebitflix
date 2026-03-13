@@ -1,7 +1,8 @@
+// .sequelizerc — this file must be CJS because sequelize-cli expects it.
 const path = require("path");
 
 module.exports = {
-    'config': path.resolve('src', 'config', 'sequelizeCli.js'),
+    'config': path.resolve('src', 'config', 'sequelizeCli.cjs'),
     'models-path': path.resolve('src', 'models'),
     'seeders-path': path.resolve('src', 'database', 'seeders'),
     'migrations-path': path.resolve('src', 'database', 'migrations')

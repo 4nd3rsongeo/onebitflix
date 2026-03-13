@@ -1,27 +1,15 @@
-"use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.authController = void 0;
-const userService_1 = require("../services/userService");
-const jwtService_1 = require("../services/jwtService");
-exports.authController = {
+import { userService } from "../services/userService.js";
+import { jwtService } from "../services/jwtService.js";
+export const authController = {
     //POST /auth/register
-    register: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    register: async (req, res) => {
         const { firstName, lastName, email, password, birth, phone } = req.body;
         try {
-            const userAlreadyExists = yield userService_1.userService.findByEmail(email);
+            const userAlreadyExists = await userService.findByEmail(email);
             if (userAlreadyExists) {
                 return res.status(400).json({ message: 'Este e-mail já está cadastrado.' });
             }
-            const user = yield userService_1.userService.create({
+            const user = await userService.create({
                 firstName,
                 lastName,
                 birth,
@@ -37,12 +25,12 @@ exports.authController = {
                 return res.status(400).json({ message: err.message });
             }
         }
-    }),
+    },
     //POST /auth/login
-    login: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    login: async (req, res) => {
         const { email, password } = req.body;
         try {
-            const user = yield userService_1.userService.findByEmail(email);
+            const user = await userService.findByEmail(email);
             if (!user)
                 return res.status(404).json({ message: 'E-mail não registrado.' });
             user.checkPassword(password, (err, isSame) => {
@@ -55,8 +43,8 @@ exports.authController = {
                     email: user.email,
                     firstName: user.firstName
                 };
-                const token = jwtService_1.jwtService.sign(payload);
-                return res.status(200).json(Object.assign(Object.assign({ authenticated: true }, payload), { token }));
+                const token = jwtService.sign(payload);
+                return res.status(200).json({ authenticated: true, ...payload, token });
             });
         }
         catch (err) {
@@ -64,5 +52,5 @@ exports.authController = {
                 return res.status(400).json({ message: err.message });
             }
         }
-    })
+    }
 };

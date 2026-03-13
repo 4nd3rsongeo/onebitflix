@@ -1,7 +1,7 @@
 import { DataTypes, Model } from "sequelize"
-import { CourseInstance } from "./Course"
-import { UserInstance } from "./User"
-import { sequelize } from "../database"
+import { CourseInstance } from "./Course.js"
+import { UserInstance } from "./User.js"
+import { sequelize } from "../database/index.js"
 
 
 //createdAt e updatedAt são automáticos

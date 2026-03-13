@@ -1,34 +1,31 @@
-"use strict";
 // src/models/Course.ts
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.Course = void 0;
-const database_1 = require("../database");
-const sequelize_1 = require("sequelize");
-exports.Course = database_1.sequelize.define('Course', {
+import { sequelize } from '../database/index.js';
+import { DataTypes } from 'sequelize';
+export const Course = sequelize.define('Course', {
     id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: sequelize_1.DataTypes.INTEGER
+        type: DataTypes.INTEGER
     },
     name: {
         allowNull: false,
-        type: sequelize_1.DataTypes.STRING
+        type: DataTypes.STRING
     },
     synopsis: {
         allowNull: false,
-        type: sequelize_1.DataTypes.TEXT
+        type: DataTypes.TEXT
     },
     thumbnailUrl: {
-        type: sequelize_1.DataTypes.STRING
+        type: DataTypes.STRING
     },
     featured: {
         defaultValue: false,
-        type: sequelize_1.DataTypes.BOOLEAN
+        type: DataTypes.BOOLEAN
     },
     categoryId: {
         allowNull: false,
-        type: sequelize_1.DataTypes.INTEGER,
+        type: DataTypes.INTEGER,
         references: { model: 'categories', key: 'id' },
         onUpdate: 'CASCADE',
         onDelete: 'RESTRICT'

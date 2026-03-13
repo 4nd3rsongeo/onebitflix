@@ -1,9 +1,9 @@
 import { Request, Response } from "express"
-import { courseService } from "../services/courseService"
-import { getPaginationParams } from "../helpers/getPaginationParams"
-import { AuthenticatedRequest } from "../middlewares/auth"
-import { likeService } from "../services/likeService"
-import { favoriteService } from "../services/favoriteService"
+import { courseService } from "../services/courseService.js"
+import { getPaginationParams } from "../helpers/getPaginationParams.js"
+import { AuthenticatedRequest } from "../middlewares/auth.js"
+import { likeService } from "../services/likeService.js"
+import { favoriteService } from "../services/favoriteService.js"
 
 // console.log('courseService no controller:', courseService)
 
@@ -62,7 +62,7 @@ export const coursesController = {
     //GET /courses/:id
     show: async (req: AuthenticatedRequest, res: Response) => {
         const userId = req.user!.id
-        const { id: courseId } = req.params
+        const { id: courseId } = (req as any).params
 
         console.log(userId)
         console.log(courseId)

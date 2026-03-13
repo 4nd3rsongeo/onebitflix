@@ -1,11 +1,11 @@
 // src/adminjs/resources.ts
 
 import { ResourceWithOptions } from "adminjs";
-import { Category, Course, Episode, User } from "../../models";
-import { categoryResourceOptions } from "./category";
-import { courseResourceFeatures, courseResourceOptions } from "./course";
-import { episodeResourceFeatures, episodeResourceOptions } from "./episode";
-import { userResourceOptions } from "./user";
+import { Category, Course, Episode, User } from "../../models/index.js";
+import { categoryResourceOptions } from "./category.js";
+import { courseResourceFeatures, courseResourceOptions } from "./course.js";
+import { episodeResourceFeatures, episodeResourceOptions } from "./episode.js";
+import { userResourceOptions } from "./user.js";
 
 
 

@@ -1,7 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.getPaginationParams = void 0;
-function getPaginationParams(query) {
+export function getPaginationParams(query) {
     const { page, perPage } = query;
     const perPageNumber = typeof perPage === 'string' && parseInt(perPage, 10) > 0
         ? parseInt(perPage, 10)
@@ -11,4 +8,3 @@ function getPaginationParams(query) {
         : 1;
     return [pageNumber, perPageNumber];
 }
-exports.getPaginationParams = getPaginationParams;

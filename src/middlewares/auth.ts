@@ -1,15 +1,15 @@
 import { NextFunction, Request, Response } from "express";
-import { jwtService } from "../services/jwtService";
-import { userService } from "../services/userService";
+import { jwtService } from "../services/jwtService.js";
+import { userService } from "../services/userService.js";
 import { JwtPayload } from "jsonwebtoken";
-import { User } from "../models/User";
+import { User } from "../models/User.js";
 
 export interface AuthenticatedRequest extends Request {
     user?: User | null
 }
 
 export function ensureAuth(req: AuthenticatedRequest, res: Response, next: NextFunction) {
-    const authorizationHeader = req.headers.authorization
+    const authorizationHeader = (req as any).headers.authorization
 
     if(!authorizationHeader) return res.status(401).json({
         message: "Não autorizado: nenhum token foi identificado."
@@ -32,7 +32,7 @@ export function ensureAuth(req: AuthenticatedRequest, res: Response, next: NextF
 }
 
 export function ensureAuthViaQuery(req: AuthenticatedRequest, res: Response, next: NextFunction) {
-    const { token } = req.query
+    const { token } = (req as any).query
 
     if(!token) return res.status(401).json({
         message: 'Não autorizado: nenhum token foi encontrado.'

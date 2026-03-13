@@ -1,8 +1,8 @@
 // src/models/User.ts
-import { sequelize } from '../database'
+import { sequelize } from '../database/index.js'
 import { DataTypes, Model, Optional } from 'sequelize'
 import bcrypt from 'bcrypt';
-import { EpisodeInstance } from './Episode';
+import { EpisodeInstance } from './Episode.js';
 
 // 1. Definição do Tipo de Callback
 type CheckPasswordCallback = (err: Error | undefined, isSame: boolean) => void
@@ -26,18 +26,18 @@ export interface UserInstance  extends Model<UserAttributes, UserCreationAttribu
 }
 // 4. A Classe que estende o Model e implementa os atributos
 export class User extends Model<UserAttributes, UserCreationAttributes> {
-  public id!: number
-  public firstName!: string
-  public lastName!: string
-  public phone!: string
-  public birth!: Date
-  public email!: string
-  public password!: string
-  public role!: 'admin' | 'user'
+  declare id: number
+  declare firstName: string
+  declare lastName: string
+  declare phone: string
+  declare birth: Date
+  declare email: string
+  declare password: string
+  declare role: 'admin' | 'user'
 
-  // Timestamps (opcional, adicione se o sequelize usar)
-  public readonly createdAt!: Date;
-  public readonly updatedAt!: Date;
+  // Timestamps
+  declare readonly createdAt: Date;
+  declare readonly updatedAt: Date;
 
   // IMPLEMENTAÇÃO DO MÉTODO DE INSTÂNCIA
   // Ao definir dentro da classe, o TypeScript reconhece o método automaticamente

@@ -1,8 +1,8 @@
 // src/models/Episode.ts
 
-import { sequelize } from '../database'
+import { sequelize } from '../database/index.js'
 import { DataTypes, Model, Optional } from 'sequelize'
-import { WatchTimeInstance } from './WatchTime'
+import { WatchTimeInstance } from './WatchTime.js'
 
 export interface Episode {
   id: number
@@ -38,7 +38,7 @@ export const Episode = sequelize.define<EpisodeInstance, Episode>('Episode', {
   },
   order: {
     allowNull: false,
-    type: DataTypes.STRING
+    type: DataTypes.INTEGER
   },
   videoUrl: {
     type: DataTypes.STRING

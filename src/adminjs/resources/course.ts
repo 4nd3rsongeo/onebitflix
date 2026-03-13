@@ -1,36 +1,46 @@
-// src/adminjs/resources/course.ts
-
+// @ts-ignore
 import uploadFileFeature from "@adminjs/upload";
-import { FeatureType, ResourceOptions } from "adminjs";
+import { FeatureType, ResourceOptions, BaseRecord } from "adminjs";
 import path from 'path';
+import componentLoader from "../component-loader.js";
 
 export const courseResourceOptions: ResourceOptions = {
-  parent: {name: 'Catálogo'},
-
+  navigation: 'Catálogo',
   editProperties: ['name', 'synopsis', 'uploadThumbnail', 'featured', 'categoryId'],
   filterProperties: ['name', 'synopsis', 'featured', 'categoryId', 'createdAt', 'updatedAt'],
   listProperties: ['id', 'name', 'featured', 'categoryId'],
-  showProperties: ['id', 'name', 'synopsis', 'featured', 'thumbnailUrl', 'categoryId', 'createdAt', 'updatedAt']
+  showProperties: ['id', 'name', 'synopsis', 'featured', 'thumbnailUrl', 'categoryId', 'createdAt', 'updatedAt'],
+  properties: {
+    uploadThumbnail: {
+      isVisible: { edit: true, filter: false, list: false, show: true },
+    },
+    thumbnailUrl: {
+      isVisible: { edit: false, filter: true, list: true, show: true },
+    }
+  }
 }
 
-// note que entre as featuretypes já existem
-// objetos para aws ou google cloud service
 export const courseResourceFeatures: FeatureType [] = [
   uploadFileFeature({
+    componentLoader,
     provider: {
       local: {
-        bucket: path.join(__dirname, '..', '..', '..', 'public'),
+        bucket: path.join(process.cwd(), 'public'),
         opts: {
-          baseUrl: '/uploads'
+          baseUrl: '/'
         }
-
       }
     },
     properties: {
       key: 'thumbnailUrl',
       file: 'uploadThumbnail'
     },
-    uploadPath: (record, filename) => `thumbnails/course-${record.get('id')}/${filename}`
+    uploadPath: (record: BaseRecord, filename: string) => {
+        const id = record.get('id') || record.params.id || 'temp';
+        return `thumbnails/course-${id}/${filename}`;
+    },
+    validation: {
+      mimeTypes: ['image/png', 'image/jpeg']
+    }
   })
 ]
-
