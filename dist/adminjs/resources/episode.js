@@ -33,7 +33,7 @@ export const episodeResourceFeatures = [
             file: 'uploadVideo'
         },
         uploadPath: (record, filename) => {
-            const courseId = record.get('courseId') || record.params.courseId || 'unknown';
+            const courseId = record.params.courseId || record.get('courseId') || 'unknown';
             return `videos/course-${courseId}/${filename}`;
         },
         validation: {
