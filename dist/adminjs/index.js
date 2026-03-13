@@ -3,6 +3,7 @@ import AdminJSExpress from "@adminjs/express";
 import AdminJSSequelize from "@adminjs/sequelize";
 import componentLoader from "./component-loader.js";
 import path from "path";
+import os from "os";
 // 1. Registre o adaptador APENAS UMA VEZ
 // @ts-ignore — adminjs v6 CJS types are not fully compatible with NodeNext
 AdminJS.registerAdapter(AdminJSSequelize);
@@ -54,6 +55,6 @@ const sessionOptions = {
 export const adminJSRouter = AdminJSExpress.buildAuthenticatedRouter(adminJs, authenticationOptions, null, sessionOptions, {
     maxFileSize: 1024 * 1024 * 1024, // 1GB
     maxFieldsSize: 1024 * 1024 * 1024, // 1GB
-    uploadDir: path.resolve(import.meta.dirname, '..', '..', 'uploads', 'temp'),
+    uploadDir: os.tmpdir(),
     keepExtensions: true,
 });

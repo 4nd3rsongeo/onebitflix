@@ -37,6 +37,7 @@ export const episodeResourceFeatures: FeatureType[] = [
     },
     uploadPath: (record: BaseRecord, filename: string) => {
       const courseId = record.params.courseId || record.get('courseId') || 'unknown';
+      console.log(`[Upload] Processing video: ${filename} for course: ${courseId}`);
       return `videos/course-${courseId}/${filename}`;
     },
     validation: {

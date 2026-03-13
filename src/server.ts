@@ -64,6 +64,16 @@ app.use(express.json())
 
 app.use(router)
 
+// Error handling middleware
+app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  console.error('[Global Error Path]:', req.path);
+  console.error('[Error Details]:', err);
+  if (res.headersSent) {
+    return next(err);
+  }
+  res.status(500).json({ error: 'Internal Server Error', details: err.message });
+});
+
 const PORT = process.env.PORT || 3000;
 
 async function start() {

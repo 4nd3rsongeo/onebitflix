@@ -34,6 +34,7 @@ export const episodeResourceFeatures = [
         },
         uploadPath: (record, filename) => {
             const courseId = record.params.courseId || record.get('courseId') || 'unknown';
+            console.log(`[Upload] Processing video: ${filename} for course: ${courseId}`);
             return `videos/course-${courseId}/${filename}`;
         },
         validation: {

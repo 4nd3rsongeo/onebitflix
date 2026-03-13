@@ -49,6 +49,15 @@ app.use(express.static('public'));
 app.use('/uploads', express.static(path.resolve(import.meta.dirname, '..', 'uploads')));
 app.use(express.json());
 app.use(router);
+// Error handling middleware
+app.use((err, req, res, next) => {
+    console.error('[Global Error Path]:', req.path);
+    console.error('[Error Details]:', err);
+    if (res.headersSent) {
+        return next(err);
+    }
+    res.status(500).json({ error: 'Internal Server Error', details: err.message });
+});
 const PORT = process.env.PORT || 3000;
 async function start() {
     try {
