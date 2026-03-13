@@ -24,7 +24,7 @@ export const courseResourceFeatures = [
         componentLoader,
         provider: {
             local: {
-                bucket: path.join(process.cwd(), 'public'),
+                bucket: path.resolve(import.meta.dirname, '..', '..', '..', 'public'),
                 opts: {
                     baseUrl: '/'
                 }

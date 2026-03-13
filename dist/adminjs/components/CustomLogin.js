@@ -33,11 +33,11 @@ export const CustomLogin = () => {
     const branding = useSelector((state) => state.branding);
     // --- EDIT LABELS HERE ---
     const labels = {
-        welcomeHeader: '¡Bienvenido al Matrix!',
-        welcomeMessage: 'Try not to break the server today, will you?',
-        email: "Tu e-mail (Don't lie)",
-        password: 'Tu password secreto',
-        loginButton: 'Entrar (If you dare)',
+        welcomeHeader: '¡Welcomido!',
+        welcomeMessage: '¿Qué hay en el abrigo del conejo?',
+        email: "e-mail",
+        password: 'Tu contraseña',
+        loginButton: 'Entrar',
     };
     // -------------------------
     return (React.createElement(Wrapper, { flex: true, variant: "grey" },

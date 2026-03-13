@@ -8,6 +8,19 @@ import { router } from "./routes.js";
 //preparado para deploy
 const app = express();
 app.use(cors());
+// Garante que os diretórios necessários existam
+const requiredDirs = [
+    path.resolve(import.meta.dirname, '..', 'uploads'),
+    path.resolve(import.meta.dirname, '..', 'uploads', 'temp'),
+    path.resolve(import.meta.dirname, '..', 'uploads', 'videos'),
+    path.resolve(import.meta.dirname, '..', 'public', 'thumbnails'),
+];
+requiredDirs.forEach(dir => {
+    if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+        console.log(`[Init] Created directory: ${dir}`);
+    }
+});
 import fs from "fs";
 // Serve AdminJS components bundle explicitly — AdminJS v7's internal
 // sendFile with relative .adminjs/ path fails with Express v5 in production.

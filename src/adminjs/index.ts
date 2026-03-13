@@ -68,7 +68,7 @@ export const adminJSRouter = AdminJSExpress.buildAuthenticatedRouter(
   {
     maxFileSize: 1024 * 1024 * 1024, // 1GB
     maxFieldsSize: 1024 * 1024 * 1024, // 1GB
-    uploadDir: path.resolve(process.cwd(), 'uploads', 'temp'),
+    uploadDir: path.resolve(import.meta.dirname, '..', '..', 'uploads', 'temp'),
     keepExtensions: true,
   } as any
 );

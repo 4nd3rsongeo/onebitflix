@@ -25,7 +25,7 @@ export const episodeResourceFeatures: FeatureType[] = [
     componentLoader,
     provider: {
       local: {
-        bucket: path.join(process.cwd(), 'uploads'), 
+        bucket: path.resolve(import.meta.dirname, '..', '..', '..', 'uploads'), 
         opts: {
           baseUrl: '/uploads'
         }
