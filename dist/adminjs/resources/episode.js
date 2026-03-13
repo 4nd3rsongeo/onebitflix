@@ -22,7 +22,7 @@ export const episodeResourceFeatures = [
         componentLoader,
         provider: {
             local: {
-                bucket: path.resolve(import.meta.dirname, '..', '..', '..', 'uploads'),
+                bucket: path.resolve(process.cwd(), 'uploads'),
                 opts: {
                     baseUrl: '/uploads'
                 }
