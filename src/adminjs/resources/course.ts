@@ -1,4 +1,3 @@
-// @ts-ignore
 import uploadFileFeature from "@adminjs/upload";
 import { FeatureType, ResourceOptions, BaseRecord } from "adminjs";
 import path from 'path';
@@ -20,7 +19,10 @@ export const courseResourceOptions: ResourceOptions = {
   }
 }
 
+// note que entre as featuretypes já existem
+// objetos para aws ou google cloud service
 export const courseResourceFeatures: FeatureType [] = [
+  // @ts-ignore — @adminjs/upload CJS types not fully compatible with NodeNext
   uploadFileFeature({
     componentLoader,
     provider: {
@@ -36,11 +38,11 @@ export const courseResourceFeatures: FeatureType [] = [
       file: 'uploadThumbnail'
     },
     uploadPath: (record: BaseRecord, filename: string) => {
-        const id = record.get('id') || record.params.id || 'temp';
+        const id = record.params.id || 'temp';
         return `thumbnails/course-${id}/${filename}`;
     },
     validation: {
       mimeTypes: ['image/png', 'image/jpeg']
     }
-  })
+  } as any)
 ]

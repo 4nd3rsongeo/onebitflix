@@ -4,7 +4,8 @@
   "type": "module",
   "scripts": {
     "dev": "set NODE_ENV=development&& tsx watch --ignore .adminjs src/server.ts",
-    "build": "tsc",
+    "clean": "if exist .adminjs rmdir /s /q .adminjs && if exist dist rmdir /s /q dist",
+    "build": "npm run clean && tsc",
     "start": "set NODE_ENV=production&& node ./dist/server.js"
   },
   "keywords": [],

@@ -16,6 +16,7 @@ export const brandingOptions = {
             filterBg: '#333333',
             accent: '#151515',
             hoverBg: '#151515',
+            bg: '#151515',
         }
     }
 };

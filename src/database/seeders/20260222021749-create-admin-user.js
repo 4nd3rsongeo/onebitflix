@@ -6,7 +6,7 @@ const bcrypt = require('bcrypt')
 
 module.exports = {
   async up(queryInterface, Sequelize) {
-    const hashedPassword = await bcrypt.hash('123456', 10)
+    const hashedPassword = await bcrypt.hash('onebitflix_superDificil01.', 10)
 
     await queryInterface.bulkInsert('users', [
       {
@@ -14,7 +14,7 @@ module.exports = {
         last_name: 'User',
         phone: '555-5555',
         birth: '1990-01-01',
-        email: 'admin@email.com',
+        email: 'onebitflix@email.com',
         password: hashedPassword,
         role: 'admin',
         created_at: new Date(),

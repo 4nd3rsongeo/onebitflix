@@ -7,7 +7,7 @@ export const authenticationOptions: AuthenticationOptions = {
   authenticate: async (email, password) => {
     const user = await userService.findByEmail(email)
 
-    if (user && (await bcrypt.compare(password, user.password))) {
+    if (user && password && user.password && (await bcrypt.compare(password, user.password))) {
       if (user.role === 'admin') {
         return user
       }

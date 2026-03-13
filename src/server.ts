@@ -24,6 +24,11 @@ app.get('/admin/frontend/assets/components.bundle.js', (_req, res) => {
   
   if (fs.existsSync(bundlePath)) {
     res.setHeader('Content-Type', 'application/javascript');
+    // Desabilitar cache para garantir que mudanças no bundle reflitam imediatamente
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+    
     const stream = fs.createReadStream(bundlePath);
     stream.pipe(res).on('error', (err) => {
       console.error('[Bundle Route] Stream error:', err);

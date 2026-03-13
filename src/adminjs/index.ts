@@ -39,7 +39,7 @@ export const adminJs = new AdminJS({
   env: {
     // SEMPRE 'development' aqui para o AdminJS.
     // Isso garante que o bundle de 55KB funcione em qualquer modo.
-    NODE_ENV: 'development' 
+    NODE_ENV: 'development'
   }
 } as any);
 
